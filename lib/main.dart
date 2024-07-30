@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 void main() {
   runApp(const MyApp());
@@ -7,11 +8,10 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Calculator',
+      title: 'Kalkulator',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -40,18 +40,11 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
   List<String> history = [];
 
   void buttonPressed(String buttonText) {
-    if (buttonText == "CLEAR") {
+    if (buttonText == "AC") {
       _output = "0";
       num1 = 0.0;
       num2 = 0.0;
       operand = "";
-    } else if (buttonText == "DELETE") {
-      if (_output.isNotEmpty) {
-        _output = _output.substring(0, _output.length - 1);
-        if (_output.isEmpty) {
-          _output = "0";
-        }
-      }
     } else if (buttonText == "+" ||
         buttonText == "-" ||
         buttonText == "÷" ||
@@ -96,32 +89,48 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
       num1 = 0.0;
       num2 = 0.0;
       operand = "";
+    } else if (buttonText == "%") {
+      _output = (double.parse(output) / 100).toString();
+    } else if (buttonText == "+/-") {
+      _output = (double.parse(output) * -1).toString();
     } else {
       _output = _output + buttonText;
     }
 
     setState(() {
-      // Update here: Remove .0 if the number is an integer
       output = double.parse(_output) == double.parse(_output).toInt()
           ? double.parse(_output).toInt().toString()
           : double.parse(_output).toString();
     });
   }
 
-  Widget buildButton(String buttonText) {
+  Widget buildButton(String buttonText, Color buttonColor, Color textColor) {
     return Expanded(
-      child: OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.all(24.0),
-        ),
-        child: Text(
-          buttonText,
-          style: const TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
+      child: Container(
+        margin: const EdgeInsets.all(
+            4.0), // Mengatur margin untuk spacing antara tombol
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor:
+                buttonColor, // Mengatur warna latar belakang tombol
+            padding: const EdgeInsets.all(
+                16.0), // Mengatur padding untuk ukuran tombol lebih kecil
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                  15.0), // Mengatur border radius untuk tombol kotak
+            ),
+            elevation: 0,
           ),
+          child: Text(
+            buttonText,
+            style: TextStyle(
+              fontSize: 25.0,
+              fontWeight: FontWeight.w800,
+              color: textColor,
+            ),
+          ),
+          onPressed: () => buttonPressed(buttonText),
         ),
-        onPressed: () => buttonPressed(buttonText),
       ),
     );
   }
@@ -132,16 +141,16 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Confirm'),
-          content: const Text('Are you sure you want to clear the history?'),
+          content: const Text('Apakah Anda yakin ingin menghapus riwayat?'),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: const Text('Tidak'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: const Text('Clear'),
+              child: const Text('Ya'),
               onPressed: () {
                 setState(() {
                   history.clear();
@@ -161,7 +170,7 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: const Text(
-          'Calculator',
+          'Kalkulator',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -216,7 +225,7 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
               contentPadding:
                   EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
               title: const Text(
-                'History',
+                'Riwayat',
                 style: TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.bold,
@@ -230,7 +239,7 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
                     return AlertDialog(
                       title: Center(
                         child: Text(
-                          'History',
+                          'Riwayat',
                           style: TextStyle(
                             fontSize: 18.0,
                             fontWeight: FontWeight.bold,
@@ -259,7 +268,7 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
                       ),
                       actions: <Widget>[
                         TextButton(
-                          child: const Text('Clear History'),
+                          child: const Text('Hapus Riwayat'),
                           onPressed: () {
                             setState(() {
                               Navigator.of(context).pop();
@@ -268,7 +277,7 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
                           },
                         ),
                         TextButton(
-                          child: const Text('Close'),
+                          child: const Text('Tutup'),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
@@ -284,7 +293,7 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
               contentPadding:
                   EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
               title: const Text(
-                'Abouts',
+                'Tentang',
                 style: TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.bold,
@@ -297,7 +306,7 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: Text(
-                        'About',
+                        'Tentang Aplikasi',
                         style: TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,
@@ -320,7 +329,7 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
                       ),
                       actions: <Widget>[
                         TextButton(
-                          child: const Text('Close'),
+                          child: const Text('Tutup'),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
@@ -334,72 +343,83 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
           ],
         ),
       ),
-      body: Container(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: <Widget>[
-            Container(
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.symmetric(
-                vertical: 24.0,
-                horizontal: 12.0,
-              ),
-              child: Text(
-                output,
-                style: const TextStyle(
-                  fontSize: 48.0,
-                  fontWeight: FontWeight.bold,
-                ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.symmetric(
+              vertical: 24.0,
+              horizontal: 12.0,
+            ),
+            child: Text(
+              output,
+              style: const TextStyle(
+                fontSize: 48.0,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            const Expanded(
-              child: Divider(),
-            ),
-            Column(
-              children: [
-                Row(
-                  children: [
-                    buildButton("7"),
-                    buildButton("8"),
-                    buildButton("9"),
-                    buildButton("÷"),
-                  ],
-                ),
-                Row(
-                  children: [
-                    buildButton("4"),
-                    buildButton("5"),
-                    buildButton("6"),
-                    buildButton("×"),
-                  ],
-                ),
-                Row(
-                  children: [
-                    buildButton("1"),
-                    buildButton("2"),
-                    buildButton("3"),
-                    buildButton("-"),
-                  ],
-                ),
-                Row(
-                  children: [
-                    buildButton("."),
-                    buildButton("0"),
-                    buildButton("00"),
-                    buildButton("+"),
-                  ],
-                ),
-                Row(
-                  children: [
-                    buildButton("CLEAR"),
-                    buildButton("DELETE"),
-                    buildButton("="),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
+          ),
+          const Expanded(
+            child: Divider(),
+          ),
+          Column(
+            children: [
+              Row(
+                children: [
+                  buildButton("AC", Colors.grey[300]!,
+                      Colors.black), // Tombol AC dengan warna grey
+                  buildButton("%", Colors.grey[300]!,
+                      Colors.black), // Tombol % dengan warna grey
+                  buildButton("+/-", Colors.grey[300]!,
+                      Colors.black), // Tombol +/-, warna grey
+                  buildButton("÷", Colors.orangeAccent, Colors.white),
+                ],
+              ),
+              Row(
+                children: [
+                  buildButton(
+                      "7", Color.fromARGB(255, 37, 37, 37), Colors.white),
+                  buildButton(
+                      "8", Color.fromARGB(255, 37, 37, 37), Colors.white),
+                  buildButton(
+                      "9", Color.fromARGB(255, 37, 37, 37), Colors.white),
+                  buildButton("×", Colors.orangeAccent, Colors.white),
+                ],
+              ),
+              Row(
+                children: [
+                  buildButton(
+                      "4", Color.fromARGB(255, 37, 37, 37), Colors.white),
+                  buildButton(
+                      "5", Color.fromARGB(255, 37, 37, 37), Colors.white),
+                  buildButton(
+                      "6", Color.fromARGB(255, 37, 37, 37), Colors.white),
+                  buildButton("-", Colors.orangeAccent, Colors.white),
+                ],
+              ),
+              Row(
+                children: [
+                  buildButton(
+                      "1", Color.fromARGB(255, 37, 37, 37), Colors.white),
+                  buildButton(
+                      "2", Color.fromARGB(255, 37, 37, 37), Colors.white),
+                  buildButton(
+                      "3", Color.fromARGB(255, 37, 37, 37), Colors.white),
+                  buildButton("+", Colors.orangeAccent, Colors.white),
+                ],
+              ),
+              Row(
+                children: [
+                  buildButton(
+                      "0", Color.fromARGB(255, 37, 37, 37), Colors.white),
+                  buildButton(
+                      ",", Color.fromARGB(255, 37, 37, 37), Colors.white),
+                  buildButton("=", Colors.orangeAccent, Colors.white),
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
