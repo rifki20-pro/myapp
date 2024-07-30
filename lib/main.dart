@@ -38,6 +38,7 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
   double num2 = 0.0;
   String operand = "";
   List<String> history = [];
+  bool isCommaVisible = false;
 
   void buttonPressed(String buttonText) {
     if (buttonText == "AC") {
@@ -45,21 +46,22 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
       num1 = 0.0;
       num2 = 0.0;
       operand = "";
+      isCommaVisible = false;
     } else if (buttonText == "+" ||
         buttonText == "-" ||
         buttonText == "÷" ||
         buttonText == "×") {
-      num1 = double.parse(output);
+      num1 = double.parse(output.replaceAll(',', '.'));
       operand = buttonText;
       _output = "0";
-    } else if (buttonText == ".") {
-      if (_output.contains(".")) {
+    } else if (buttonText == ",") {
+      if (_output.contains(",")) {
         return;
       } else {
-        _output = _output + buttonText;
+        _output = _output + ",";
       }
     } else if (buttonText == "=") {
-      num2 = double.parse(output);
+      num2 = double.parse(output.replaceAll(',', '.'));
       String result = "";
       if (operand == "+") {
         result = (num1 + num2).toString();
@@ -90,17 +92,19 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
       num2 = 0.0;
       operand = "";
     } else if (buttonText == "%") {
-      _output = (double.parse(output) / 100).toString();
+      _output = (double.parse(output.replaceAll(',', '.')) / 100).toString();
     } else if (buttonText == "+/-") {
-      _output = (double.parse(output) * -1).toString();
+      _output = (double.parse(output.replaceAll(',', '.')) * -1).toString();
     } else {
-      _output = _output + buttonText;
+      if (_output == "0") {
+        _output = buttonText;
+      } else {
+        _output = _output + buttonText;
+      }
     }
 
     setState(() {
-      output = double.parse(_output) == double.parse(_output).toInt()
-          ? double.parse(_output).toInt().toString()
-          : double.parse(_output).toString();
+      output = _output;
     });
   }
 
