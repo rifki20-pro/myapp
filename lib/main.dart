@@ -140,23 +140,45 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirm'),
+          title: Center(
+            child: Text('Konfirmasi'),
+          ),
           content: const Text('Apakah Anda yakin ingin menghapus riwayat?'),
           actions: <Widget>[
             TextButton(
-              child: const Text('Tidak'),
+              child: const Text(
+                'Tidak',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
             ),
             TextButton(
-              child: const Text('Ya'),
+              child: const Text(
+                'Ya',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               onPressed: () {
                 setState(() {
                   history.clear();
                 });
                 Navigator.of(context).pop();
               },
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+              ),
             ),
           ],
         );
@@ -268,19 +290,39 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
                       ),
                       actions: <Widget>[
                         TextButton(
-                          child: const Text('Hapus Riwayat'),
+                          child: const Text(
+                            'Hapus Riwayat',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           onPressed: () {
                             setState(() {
                               Navigator.of(context).pop();
                               _showClearHistoryDialog();
                             });
                           },
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
                         ),
                         TextButton(
-                          child: const Text('Tutup'),
+                          child: const Text(
+                            'Tutup',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                          ),
                         ),
                       ],
                     );
@@ -329,10 +371,20 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
                       ),
                       actions: <Widget>[
                         TextButton(
-                          child: const Text('Tutup'),
+                          child: const Text(
+                            'Tutup',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                          ),
                         ),
                       ],
                     );
