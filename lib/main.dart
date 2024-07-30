@@ -45,10 +45,17 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
       num1 = 0.0;
       num2 = 0.0;
       operand = "";
+    } else if (buttonText == "DELETE") {
+      if (_output.isNotEmpty) {
+        _output = _output.substring(0, _output.length - 1);
+        if (_output.isEmpty) {
+          _output = "0";
+        }
+      }
     } else if (buttonText == "+" ||
         buttonText == "-" ||
-        buttonText == "/" ||
-        buttonText == "*") {
+        buttonText == "÷" ||
+        buttonText == "×") {
       num1 = double.parse(output);
       operand = buttonText;
       _output = "0";
@@ -67,14 +74,25 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
       if (operand == "-") {
         result = (num1 - num2).toString();
       }
-      if (operand == "*") {
+      if (operand == "×") {
         result = (num1 * num2).toString();
       }
-      if (operand == "/") {
+      if (operand == "÷") {
         result = (num1 / num2).toString();
       }
       _output = result;
-      history.add("$num1 $operand $num2 = $result");
+
+      String formattedNum1 =
+          num1 == num1.toInt() ? num1.toInt().toString() : num1.toString();
+      String formattedNum2 =
+          num2 == num2.toInt() ? num2.toInt().toString() : num2.toString();
+      String formattedResult =
+          double.parse(result) == double.parse(result).toInt()
+              ? double.parse(result).toInt().toString()
+              : result;
+
+      history.add("$formattedNum1 $operand $formattedNum2 = $formattedResult");
+
       num1 = 0.0;
       num2 = 0.0;
       operand = "";
@@ -83,7 +101,10 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
     }
 
     setState(() {
-      output = double.parse(_output).toStringAsFixed(2);
+      // Update here: Remove .0 if the number is an integer
+      output = double.parse(_output) == double.parse(_output).toInt()
+          ? double.parse(_output).toInt().toString()
+          : double.parse(_output).toString();
     });
   }
 
@@ -102,6 +123,35 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
         ),
         onPressed: () => buttonPressed(buttonText),
       ),
+    );
+  }
+
+  void _showClearHistoryDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm'),
+          content: const Text('Are you sure you want to clear the history?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Clear'),
+              onPressed: () {
+                setState(() {
+                  history.clear();
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -162,6 +212,7 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
               ),
             ),
             ListTile(
+              leading: Icon(Icons.history),
               contentPadding:
                   EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
               title: const Text(
@@ -177,27 +228,47 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text(
-                        'History',
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
+                      title: Center(
+                        child: Text(
+                          'History',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       content: SizedBox(
                         width: double.maxFinite,
-                        child: ListView.builder(
-                          itemCount: history.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text(history[index]),
-                            );
-                          },
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: history.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    title: Text(history[index]),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 4.0, horizontal: 8.0),
+                                  );
+                                },
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                          ],
                         ),
                       ),
                       actions: <Widget>[
                         TextButton(
-                          child: Text('Close'),
+                          child: const Text('Clear History'),
+                          onPressed: () {
+                            setState(() {
+                              Navigator.of(context).pop();
+                              _showClearHistoryDialog();
+                            });
+                          },
+                        ),
+                        TextButton(
+                          child: const Text('Close'),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
@@ -209,6 +280,7 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
               },
             ),
             ListTile(
+              leading: Icon(Icons.info),
               contentPadding:
                   EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
               title: const Text(
@@ -230,6 +302,7 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                       content: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -240,7 +313,7 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
                           ),
                           SizedBox(height: 10),
                           Text(
-                            'Author: Rifki Darmawan',
+                            'Rifki Darmawan',
                             style: TextStyle(fontSize: 16.0),
                           ),
                         ],
@@ -289,7 +362,7 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
                     buildButton("7"),
                     buildButton("8"),
                     buildButton("9"),
-                    buildButton("/"),
+                    buildButton("÷"),
                   ],
                 ),
                 Row(
@@ -297,7 +370,7 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
                     buildButton("4"),
                     buildButton("5"),
                     buildButton("6"),
-                    buildButton("*"),
+                    buildButton("×"),
                   ],
                 ),
                 Row(
@@ -319,6 +392,7 @@ class _CalculatorHomePageState extends State<CalculatorHomePage> {
                 Row(
                   children: [
                     buildButton("CLEAR"),
+                    buildButton("DELETE"),
                     buildButton("="),
                   ],
                 ),
